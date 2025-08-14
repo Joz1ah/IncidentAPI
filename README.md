@@ -3,17 +3,18 @@
 Full Stack .NET Developer Assessment
 This repository contains solutions for all four technical challenges. Each task can be tested independently.
 
+
 📋 Task Overview
 TaskFocusTechnologyTest LocationAREST API DesignASP.NET Core Web APISwagger UIBUI ComponentRazor/MVCWeb BrowserCMobile App.NET MAUIAndroid/WindowsDClass DesignC# ObjectsAPI Endpoint
 
-🔧 Prerequisites
 
+🔧 Prerequisites
 Visual Studio 2022 (with .NET 8.0)
 Android Emulator (for Task C mobile testing)
 
 
-⚡ Testing Instructions
-TASK A: REST API Design & Validation
+
+**TASK A**: REST API Design & Validation
 🎯 Goal: Test incident API with duplicate detection and validation
 
 Open IncidentAPI project in Visual Studio
@@ -47,29 +48,18 @@ POST /api/incidents
 ❌ Invalid severity returns 400 Bad Request
 
 
-TASK B: Blazor/Razor Component
+
+
+**TASK B**: Blazor/Razor Component
 🎯 Goal: Test dynamic incident display with styling
 
 Ensure IncidentAPI is running
 Navigate to: https://localhost:7097/IncidentView
 
-✅ What to Look For:
-
-📊 Statistics cards showing incident counts
-🔄 Dynamic table that updates with new data
-🎨 Color-coded styling (High=red, Medium=yellow, Low=green)
-⚡ Refresh button functionality
-➕ Add Sample button creates new incidents
-
-🎨 UI Features:
-
-Color-coded severity badges
-Hover effects on table rows
-Responsive Bootstrap layout
-Loading states and error handling
 
 
-TASK C: Mobile Data Handling (.NET MAUI)
+
+**TASK C**: Mobile Data Handling (.NET MAUI)
 🎯 Goal: Test mobile form with API integration and field transformation
 Setup:
 
@@ -86,16 +76,6 @@ Title: "Mobile Test Incident"
 Description: "Testing mobile submission"
 Severity: "Medium"
 
-
-Click Submit
-Verify success:
-
-✅ Success animation appears
-📱 Incident ID shown
-🔄 "Report Another Incident" button works
-
-
-
 Verify API Integration:
 
 Go back to Swagger (https://localhost:7097/swagger)
@@ -109,7 +89,9 @@ API receives: Title, Description
 Transformation handled automatically
 
 
-TASK D: Class Design with Constraints
+
+
+**TASK D**: Class Design with Constraints
 🎯 Goal: Test incident class with urgency calculation
 
 Ensure IncidentAPI is running
