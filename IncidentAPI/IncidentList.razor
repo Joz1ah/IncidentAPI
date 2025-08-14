@@ -1,0 +1,264 @@
+﻿@page "/incidents"
+
+<h3>Incident Dashboard</h3>
+
+@if (isLoading)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading incidents...</p>
+    </div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @errorMessage
+        <button type="button" class="btn btn-sm btn-outline-danger ms-2" @onclick="ClearError">
+            Clear
+        </button>
+    </div>
+}
+else
+{
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">@incidents.Count</h5>
+                    <p class="card-text">Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">@incidents.Count(i => i.Severity == "High")</h5>
+                    <p class="card-text">High</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">@incidents.Count(i => i.Severity == "Medium")</h5>
+                    <p class="card-text">Medium</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">@incidents.Count(i => i.Severity == "Low")</h5>
+                    <p class="card-text">Low</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mb-3">
+        <button class="btn btn-primary me-2" @onclick="RefreshIncidents">
+            Refresh
+        </button>
+        <button class="btn btn-success me-2" @onclick="AddSampleIncident">
+            Add Sample
+        </button>
+    </div>
+
+    <!-- Incidents Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var incident in incidents.OrderByDescending(i => i.CreatedAt))
+                {
+                    <tr class="@GetRowClass(incident.Severity)" @onclick="() => SelectIncident(incident)" style="cursor: pointer;">
+                        <td><strong>@incident.Title</strong></td>
+                        <td>@GetTruncatedDescription(incident.Description)</td>
+                        <td>
+                            <span class="badge @GetSeverityBadgeClass(incident.Severity)">
+                                @incident.Severity
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">@incident.Status</span>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                @incident.CreatedAt.ToString("MMM dd, HH:mm")
+                            </small>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (selectedIncident != null)
+    {
+        <div class="alert alert-info mt-3">
+            <strong>Selected:</strong> @selectedIncident.Title
+        </div>
+    }
+}
+
+<style>
+    .table tbody tr:hover {
+        background-color: #f8f9fa !important;
+        transition: all 0.2s ease;
+    }
+
+    .severity-high {
+        border-left: 4px solid #dc3545;
+    }
+
+    .severity-medium {
+        border-left: 4px solid #ffc107;
+    }
+
+    .severity-low {
+        border-left: 4px solid #28a745;
+    }
+</style>
+
+@code {
+    private List<IncidentDto> incidents = new();
+    private bool isLoading = true;
+    private string? errorMessage;
+    private IncidentDto? selectedIncident;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadIncidents();
+    }
+
+    private async Task LoadIncidents()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            StateHasChanged();
+
+            // Simulate loading delay
+            await Task.Delay(1000);
+
+            // For demo purposes, create sample data
+            // In real app, this would call your API: await Http.GetAsync("/api/incidents")
+            incidents = new List<IncidentDto>
+            {
+                new IncidentDto
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Server Outage in Production",
+                    Description = "Main web server is not responding to requests",
+                    Severity = "High",
+                    Status = "Open",
+                    CreatedAt = DateTime.Now.AddHours(-2)
+                },
+                new IncidentDto
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Database Connection Slow",
+                    Description = "Users reporting slow page load times",
+                    Severity = "Medium",
+                    Status = "Open",
+                    CreatedAt = DateTime.Now.AddMinutes(-30)
+                },
+                new IncidentDto
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Minor UI Bug in Login Form",
+                    Description = "Submit button slightly misaligned on mobile devices",
+                    Severity = "Low",
+                    Status = "Open",
+                    CreatedAt = DateTime.Now.AddMinutes(-10)
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load incidents: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefreshIncidents()
+    {
+        await LoadIncidents();
+    }
+
+    private void AddSampleIncident()
+    {
+        var severities = new[] { "High", "Medium", "Low" };
+        var titles = new[] { "Network Issue", "Performance Problem", "Security Alert", "System Error" };
+
+        var random = new Random();
+        var newIncident = new IncidentDto
+            {
+                Id = Guid.NewGuid(),
+                Title = titles[random.Next(titles.Length)],
+                Description = "Automatically generated sample incident for demonstration",
+                Severity = severities[random.Next(severities.Length)],
+                Status = "Open",
+                CreatedAt = DateTime.Now
+            };
+
+        incidents.Insert(0, newIncident);
+        StateHasChanged();
+    }
+
+    private void SelectIncident(IncidentDto incident)
+    {
+        selectedIncident = incident;
+        StateHasChanged();
+    }
+
+    private void ClearError()
+    {
+        errorMessage = null;
+        StateHasChanged();
+    }
+
+    private string GetSeverityBadgeClass(string severity) => severity switch
+    {
+        "High" => "bg-danger",
+        "Medium" => "bg-warning text-dark",
+        "Low" => "bg-success",
+        _ => "bg-secondary"
+    };
+
+    private string GetRowClass(string severity) => $"severity-{severity.ToLower()}";
+
+    private string GetTruncatedDescription(string? description)
+    {
+        if (string.IsNullOrEmpty(description)) return "";
+        return description.Length > 50 ? description[..50] + "..." : description;
+    }
+
+    // Simple DTO class
+    public class IncidentDto
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string Severity { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+    }
+}

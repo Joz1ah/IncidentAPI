@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IncidentMobileApp.MainPage"
+             Title="Report Incident"
+             BackgroundColor="#f8f9fa">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20" VerticalOptions="Center">
+
+            <!-- Modern Header with Icon -->
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Label Text="🚨" 
+                       FontSize="48"
+                       HorizontalOptions="Center" />
+                <Label Text="Report New Incident"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="#2c3e50" />
+                <Label Text="Quickly submit incident details to the system"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       TextColor="#7f8c8d" />
+            </VerticalStackLayout>
+
+            <!-- Success Animation Frame (Hidden by default) -->
+            <Frame x:Name="SuccessAnimationFrame" 
+                   IsVisible="False"
+                   BackgroundColor="#d4edda"
+                   BorderColor="#c3e6cb"
+                   Padding="30"
+                   CornerRadius="15"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
+                    <Label Text="✅" 
+                           FontSize="60"
+                           HorizontalOptions="Center" />
+                    <Label Text="Success!"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#155724"
+                           HorizontalOptions="Center" />
+                    <Label x:Name="SuccessMessageLabel"
+                           Text="Your incident has been submitted successfully!"
+                           FontSize="16"
+                           TextColor="#155724"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
+                    <Button Text="Report Another Incident"
+                            BackgroundColor="#28a745"
+                            TextColor="White"
+                            CornerRadius="25"
+                            Clicked="OnReportAnotherClicked"
+                            Padding="20,10" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Main Form (Hidden when success is shown) -->
+            <VerticalStackLayout x:Name="MainFormContainer" Spacing="20">
+
+                <!-- Clean Form Card -->
+                <Frame BackgroundColor="White" 
+                       Padding="25" 
+                       CornerRadius="15"
+                       HasShadow="True"
+                       BorderColor="#e9ecef">
+                    <VerticalStackLayout Spacing="20">
+
+                        <!-- Title Field -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Incident Title"
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#495057" />
+                            <Frame BackgroundColor="#f8f9fa" 
+                                   Padding="0" 
+                                   CornerRadius="8"
+                                   BorderColor="#dee2e6"
+                                   HasShadow="False">
+                                <Entry x:Name="TitleEntry"
+                                       Placeholder="Brief description of the incident"
+                                       BackgroundColor="Transparent"
+                                       TextColor="#495057"
+                                       PlaceholderColor="#adb5bd"
+                                       FontSize="16"
+                                       Margin="15,10" />
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Description Field -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Description"
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#495057" />
+                            <Frame BackgroundColor="#f8f9fa" 
+                                   Padding="0" 
+                                   CornerRadius="8"
+                                   BorderColor="#dee2e6"
+                                   HasShadow="False">
+                                <Editor x:Name="DescriptionEditor"
+                                        Placeholder="Provide detailed information about what happened..."
+                                        BackgroundColor="Transparent"
+                                        TextColor="#495057"
+                                        PlaceholderColor="#adb5bd"
+                                        FontSize="16"
+                                        HeightRequest="120"
+                                        Margin="15,10" />
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <!-- Severity Picker -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Severity Level"
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="#495057" />
+                            <Frame BackgroundColor="#f8f9fa" 
+                                   Padding="0" 
+                                   CornerRadius="8"
+                                   BorderColor="#dee2e6"
+                                   HasShadow="False">
+                                <Picker x:Name="SeverityPicker"
+                                        Title="Select severity level"
+                                        BackgroundColor="Transparent"
+                                        TextColor="#495057"
+                                        TitleColor="#adb5bd"
+                                        FontSize="16"
+                                        Margin="15,10">
+                                    <Picker.Items>
+                                        <x:String>Low</x:String>
+                                        <x:String>Medium</x:String>
+                                        <x:String>High</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </Frame>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Action Buttons -->
+                <VerticalStackLayout Spacing="15">
+                    <Button x:Name="SubmitBtn"
+                            Text="Submit Incident"
+                            BackgroundColor="#007bff"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HeightRequest="55"
+                            CornerRadius="27"
+                            Clicked="OnSubmitClicked" />
+
+                    <Button x:Name="ClearBtn"
+                            Text="Clear Form"
+                            BackgroundColor="Transparent"
+                            TextColor="#6c757d"
+                            BorderColor="#6c757d"
+                            BorderWidth="1"
+                            FontSize="16"
+                            HeightRequest="45"
+                            CornerRadius="22"
+                            Clicked="OnClearClicked" />
+                </VerticalStackLayout>
+
+                <!-- Error Messages -->
+                <Frame x:Name="ErrorFrame" 
+                       IsVisible="False"
+                       BackgroundColor="#f8d7da"
+                       BorderColor="#f5c6cb"
+                       Padding="20"
+                       CornerRadius="10"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="❌" 
+                               FontSize="24"
+                               HorizontalOptions="Center" />
+                        <Label x:Name="ErrorLabel"
+                               TextColor="#721c24"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" />
+                        <Button Text="Dismiss"
+                                BackgroundColor="#dc3545"
+                                TextColor="White"
+                                FontSize="12"
+                                CornerRadius="15"
+                                Padding="15,5"
+                                HorizontalOptions="Center"
+                                Clicked="OnDismissErrorClicked" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Loading Indicator -->
+                <Frame x:Name="LoadingFrame"
+                       IsVisible="False"
+                       BackgroundColor="White"
+                       Padding="30"
+                       CornerRadius="15"
+                       HasShadow="True"
+                       BorderColor="#e9ecef">
+                    <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <ActivityIndicator x:Name="LoadingIndicator"
+                                           IsRunning="True"
+                                           Color="#007bff"
+                                           WidthRequest="40"
+                                           HeightRequest="40" />
+                        <Label Text="Submitting incident..."
+                               FontSize="16"
+                               TextColor="#495057"
+                               HorizontalOptions="Center" />
+                        <Label Text="Please wait while we process your request"
+                               FontSize="12"
+                               TextColor="#6c757d"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
